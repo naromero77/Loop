@@ -155,6 +155,14 @@ class ParameterEstimation {
                 }
                 self.endDate = runningEndDate
                 
+                if estimationIntervals.count == 0 && self.endDate > self.startDate {
+                    // if no intervals assembled so far, add a fasting interval between startDate and endDate
+                    let glucoseFasting = self.glucose.filterDateRange(self.startDate, self.endDate)
+                    let insulinEffectFasting = self.insulinEffect?.filterDateRange(self.startDate, self.endDate)
+                    let basalEffectFasting = self.basalEffect?.filterDateRange(self.startDate, self.endDate)
+                    estimationIntervals.append(EstimationInterval(startDate: self.startDate, endDate: self.endDate, type: .fasting, glucose: glucoseFasting, insulinEffect: insulinEffectFasting, basalEffect: basalEffectFasting))
+                }
+                
                 self.parameterEstimationStatus = "*** Assembly of estimation intervals completed by trimming out active meal absorptions."
                 return
             }
